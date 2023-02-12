@@ -63,7 +63,7 @@ const Home = () => {
           </li>
         </ul>
       </div>
-      {/* <TestimonialSection /> */}
+      <TestimonialSection />
       <Footer />
     </div>
   );
