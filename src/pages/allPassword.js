@@ -1,3 +1,4 @@
+import React from "react";
 import Navbar from "../components/navbar";
 import CardComponent from "../components/cards";
 import { Link } from "react-router-dom";
@@ -27,13 +28,13 @@ const AllPasswords = () => {
       </div>
       <div className="mt-8 p-16 grid grid-rows-3 grid-flow-col gap-16">
         <CardComponent />
-        {/* <CardComponent />
         <CardComponent />
         <CardComponent />
         <CardComponent />
         <CardComponent />
         <CardComponent />
-        <CardComponent /> */}
+        <CardComponent />
+        <CardComponent />
       </div>
       <div>
         <Link
