@@ -1,21 +1,31 @@
 import { BrowserRouter, Routes, Route, Link, NavLink } from "react-router-dom";
-import About from "./pages/about";
 import Home from "./pages/home";
+import AddPassword from "./pages/appPassword";
+import PrivateKey from "./pages/privateKey";
+import Signin from "./pages/signin";
+import SignUp from "./pages/signup";
+import AllPasswords from "./pages/allPassword";
 
 function App() {
   return (
     <BrowserRouter>
-      <header>
+      {/* <header>
         <nav>
-          <h1>Router app</h1>
-          <NavLink to="/">Home</NavLink>
-          <NavLink to="/about">about</NavLink>
+          <NavLink to="/signin">signin</NavLink>
+          <NavLink to="/signup">signup</NavLink>
+          <NavLink to="/home">Home</NavLink>
+          <NavLink to="/addPassword">add password</NavLink>
         </nav>
-      </header>
+      </header> */}
       <main>
         <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/about" element={<About />} />
+          {/* <Route path="/" element={<Signin />} /> */}
+          <Route path="/signin" element={<Signin />} />
+          <Route path="/signup" element={<SignUp />} />
+          <Route path="/home" element={<Home />} />
+          <Route path="/privateKey" element={<PrivateKey />} />
+          <Route path="/addPassword" element={<AddPassword />} />
+          <Route path="/allPassword" element={<AllPasswords />} />
         </Routes>
       </main>
     </BrowserRouter>
