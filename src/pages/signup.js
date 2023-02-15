@@ -6,7 +6,7 @@ const SignUp = () => {
   const URL = "http://localhost:3300";
   const [user, setUser] = useState({ email: "", name: "", password: "" });
   const [tokens, setTokens] = useState({});
-  const [isTokenPresent, setIsTokenPresent] = useState(false);
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -20,17 +20,16 @@ const SignUp = () => {
     await axios
       .post(`${URL}/auth/signup`, user)
       .then((response) => {
-        if (Object.keys(response.data).length === 2) {
+        if (response.data.accessToken) {
           setTokens(response.data);
-          setIsTokenPresent(true);
           console.log(tokens);
+          navigate("/home");
         } else {
           console.log(response.data);
         }
       })
       .catch((err) => {
         console.log(err);
-        setIsTokenPresent(false);
       });
     console.log(user);
   };

@@ -1,7 +1,15 @@
-export default function CardComponent() {
+export default function CardComponent(props) {
+  const {
+    email,
+    password,
+    siteTitle,
+    userName,
+    websiteURL,
+    _id: id,
+  } = props.passwordDetailes;
   return (
     <>
-      <div className="rounded-lg shadow-md lg:max-w-sm">
+      <div className="rounded-lg shadow-md lg:max-w-sm" id={id}>
         <div className="p-8 w-full">
           <div className="flex ">
             <svg
@@ -12,15 +20,13 @@ export default function CardComponent() {
               <path d="M4 8V6a6 6 0 1 1 12 0v2h1a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2v-8c0-1.1.9-2 2-2h1zm5 6.73V17h2v-2.27a2 2 0 1 0-2 0zM7 6v2h6V6a3 3 0 0 0-6 0z" />
             </svg>
             <h4 className=" ml-2 text-xl font-semibold tracking-tight text-blue-600">
-              Google
+              {siteTitle}
             </h4>
           </div>
           <p class="mt-8 mb-4 text-gray-700 text-base">
-            Site URL: www.google.com
+            Site URL: {websiteURL}
           </p>
-          <p class=" text-gray-700 text-base">
-            Username: joeytribbiani09@gmail.com
-          </p>
+          <p class=" text-gray-700 text-base">Username: {userName}</p>
           <p class="mb-4 text-gray-700 text-base">Password: *********</p>
           <div className="flex justify-end">
             <button className="px-4 py-2 text-sm text-blue-100 bg-blue-500 rounded shadow">

@@ -1,12 +1,47 @@
-import React from "react";
+import React, { useState } from "react";
 import Navbar from "../components/navbar";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const AddPassword = () => {
+  const URL = "http://localhost:3300";
+  const [passDetailes, setPassDetailes] = useState({});
+  const navigate = useNavigate();
+  const accessToken = sessionStorage.getItem("access");
+  axios.defaults.withCredentials = true;
+  axios.defaults.headers.common["authorization"] = "Bearer " + accessToken;
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setPassDetailes({
+      ...passDetailes,
+      [name]: value,
+    });
+  };
+
+  const handleAddPassword = async (e) => {
+    e.preventDefault();
+    if (passDetailes.confirm_password === passDetailes.password) {
+      await axios
+        .post(`${URL}/pass/addPass`, passDetailes)
+        .then((response) => {
+          console.log(response.data);
+          if (response.data.msg === "password stored") {
+            navigate("/allPasswords");
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    } else {
+      alert("Passwords not same");
+    }
+  };
+
   return (
     <div className="h-screen bg-white">
       <Navbar className="" />
-      <form>
+      <form onSubmit={handleAddPassword}>
         <div
           className="bg-white p-8
         "
@@ -19,8 +54,11 @@ const AddPassword = () => {
               Site address
             </label>
             <input
-              type="address"
-              id="address"
+              type="text"
+              id="email"
+              name="websiteURL"
+              value={passDetailes.websiteURL}
+              onChange={handleChange}
               class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
               placeholder="Ex: passman.com"
               required
@@ -28,14 +66,17 @@ const AddPassword = () => {
           </div>
           <div class="mb-6">
             <label
-              for="text"
+              for="Title"
               class="block mb-2 ml-1 text-sm font-medium text-gray-900 "
             >
               Site Title
             </label>
             <input
               type="text"
-              id="text"
+              id="Title"
+              name="Title"
+              value={passDetailes.Title}
+              onChange={handleChange}
               class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
               placeholder="Ex: PassMan"
               required
@@ -44,14 +85,17 @@ const AddPassword = () => {
 
           <div class="mb-6">
             <label
-              for="text"
+              for="username"
               class="block mb-2 ml-1 text-sm font-medium text-gray-900 "
             >
               Username
             </label>
             <input
               type="text"
-              id="text"
+              id="username"
+              name="username"
+              value={passDetailes.username}
+              onChange={handleChange}
               class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
               placeholder="Ex: Pass@Man"
               required
@@ -67,6 +111,9 @@ const AddPassword = () => {
             <input
               type="password"
               id="password"
+              name="password"
+              value={passDetailes.password}
+              onChange={handleChange}
               class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
               placeholder="•••••••••"
               required
@@ -82,6 +129,9 @@ const AddPassword = () => {
             <input
               type="password"
               id="confirm_password"
+              name="confirm_password"
+              value={passDetailes.confirm_password}
+              onChange={handleChange}
               class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
               placeholder="•••••••••"
               required
@@ -111,7 +161,7 @@ const AddPassword = () => {
               type="submit"
               className="text-white flex flex-col sm:text-center justify-end bg-blue-500 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center "
             >
-              <Link href="/allPasswords">Add</Link>
+              Add
             </button>
           </div>
         </div>

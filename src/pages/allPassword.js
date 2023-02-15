@@ -1,9 +1,30 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Navbar from "../components/navbar";
 import CardComponent from "../components/cards";
 import { Link } from "react-router-dom";
+import axios from "axios";
 
 const AllPasswords = () => {
+  const URL = "http://localhost:3300";
+  const accessToken = sessionStorage.getItem("access");
+  const [Passwords, setPasswords] = useState([]);
+  axios.defaults.withCredentials = true;
+  axios.defaults.headers.common["authorization"] = "Bearer " + accessToken;
+
+  useEffect(() => {
+    async function fetchData() {
+      await axios
+        .get(`${URL}/pass/getallpass`)
+        .then((response) => {
+          setPasswords(response.data);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+    fetchData();
+  }, []);
+
   return (
     <div className="bg-white">
       <div className="flex justify-center">
@@ -27,14 +48,9 @@ const AllPasswords = () => {
         </button> */}
       </div>
       <div className="mt-8 p-16 grid grid-rows-3 grid-flow-col gap-16">
-        <CardComponent />
-        <CardComponent />
-        <CardComponent />
-        <CardComponent />
-        <CardComponent />
-        <CardComponent />
-        <CardComponent />
-        <CardComponent />
+        {Passwords.map((pass, i) => {
+          return <CardComponent key={i} passwordDetailes={pass} />;
+        })}
       </div>
       <div>
         <Link

@@ -8,6 +8,7 @@ export default function Signin() {
   const [tokens, setTokens] = useState({});
   const [isTokenPresent, setIsTokenPresent] = useState(false);
   const navigate = useNavigate();
+  axios.defaults.withCredentials = true;
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -17,11 +18,11 @@ export default function Signin() {
     });
   };
 
-  const handleSignin = () => {
-    axios
+  const handleSignin = async () => {
+    await axios
       .post(`${URL}/auth/signin`, user)
       .then((response) => {
-        if (Object.keys(response.data).length === 2) {
+        if (response.data.accessToken) {
           setTokens(response.data);
           setIsTokenPresent(true);
           sessionStorage.setItem("access", response.data.accessToken);

@@ -1,6 +1,7 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function Navbar() {
+  const navigate = useNavigate();
   return (
     <nav className="bg-white px-2 sm:px-4 py-2.5 fixed w-full z-20 top-0 left-0 border-b border-gray-200">
       <div className="container flex flex-wrap items-center justify-between mx-auto">
@@ -45,7 +46,7 @@ export default function Navbar() {
           <ul className="flex flex-col p-4 mt-4 border border-gray-100 rounded-lg bg-gray-50 md:flex-row md:space-x-8 md:mt-0 md:text-sm md:font-medium md:border-0 md:bg-white">
             <li>
               <Link
-                // href="/home"
+                to="/home"
                 className="block py-2 pl-3 pr-4 text-gray-700 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0"
               >
                 Home
@@ -53,7 +54,7 @@ export default function Navbar() {
             </li>
             <li>
               <Link
-                // href="/allPasswords"
+                to="/allPasswords"
                 className="block py-2 pl-3 pr-4 text-gray-700 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0"
               >
                 All Passwords
@@ -61,7 +62,7 @@ export default function Navbar() {
             </li>
             <li>
               <Link
-                // href="/addPassword"
+                to="/addPassword"
                 className="block py-2 pl-3 pr-4 text-gray-700 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0"
               >
                 Add Password

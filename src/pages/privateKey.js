@@ -5,22 +5,27 @@ import { useState } from "react";
 export default function PrivateKey() {
   const URL = "http://localhost:3300";
   const [privateKey, setPrivateKey] = useState("");
+  const accessToken = sessionStorage.getItem("access");
+  axios.defaults.withCredentials = true;
+  axios.defaults.headers.common["authorization"] = "Bearer " + accessToken;
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     setPrivateKey(e.target.value);
   };
 
-  const checkPrivate = () => {
-    // axios
-    //   .post(`${URL}/key/storeKey`, {
-    //     headers: { Authorization: tokens.accessToken },
-    //   })
-    //   .then((Response) => {
-    //     console.log(Response.data);
-    //   })
-    //   .catch((err) => {
-    //     console.log(err);
-    //   });
+  const checkPrivate = async () => {
+    await axios
+      .post(`${URL}/key/storeKey`, { privateKey })
+      .then((Response) => {
+        console.log(Response.data);
+        if (Response.data.msg === "Private key stored") {
+          navigate("/home");
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
   return (
@@ -47,11 +52,8 @@ export default function PrivateKey() {
             />
           </div>
 
-          <div className="mt-6">
-            <Link
-              className="w-full flex justify-center px-4 py-2 tracking-wide text-white transition-colors duration-200 transform bg-blue-500 rounded-md hover:bg-blue-600 focus:outline-none focus:bg-blue-600"
-              // href="/home"
-            >
+          <div className="mt-6" onClick={checkPrivate}>
+            <Link className="w-full flex justify-center px-4 py-2 tracking-wide text-white transition-colors duration-200 transform bg-blue-500 rounded-md hover:bg-blue-600 focus:outline-none focus:bg-blue-600">
               Continue
             </Link>
           </div>
@@ -60,10 +62,7 @@ export default function PrivateKey() {
         <p className="mt-8 text-xs font-light text-center text-gray-700">
           {" "}
           Dont have an account?{" "}
-          <Link
-            // href="/signup"
-            className="font-medium text-blue-600 hover:underline"
-          >
+          <Link className="font-medium text-blue-600 hover:underline">
             Sign Up
           </Link>
         </p>
