@@ -12,33 +12,45 @@ import PrivateKey from "./pages/privateKey";
 import Signin from "./pages/signin";
 import SignUp from "./pages/signup";
 import AllPasswords from "./pages/allPassword";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 function App() {
-  const accessToken = sessionStorage.getItem("access");
-  const [isAuth, setIsAuth] = useState(accessToken ? true : false);
+  // const accessToken = sessionStorage.getItem("access");
+  const [accessToken, setAccessToken] = useState(null);
+  useEffect(() => {
+    setAccessToken(sessionStorage.getItem("access"));
+  }, []);
   return (
     <BrowserRouter>
       <main>
         <Routes>
-          <Route path="/" element={<a />} />
-          <Route path="/signin" element={<Signin />} />
+          <Route exact path="/" element={<a />} />
+          <Route
+            path="/signin"
+            element={<Signin setAccessToken={setAccessToken} />}
+          />
           <Route path="/signup" element={<SignUp />} />
           <Route
             path="/home"
-            element={isAuth ? <Home /> : <Navigate replace to={"/"} />}
+            element={accessToken ? <Home /> : <Navigate replace to={"/"} />}
           />
           <Route
             path="/privateKey"
-            element={isAuth ? <PrivateKey /> : <Navigate replace to={"/"} />}
+            element={
+              accessToken ? <PrivateKey /> : <Navigate replace to={"/"} />
+            }
           />
           <Route
             path="/addPassword"
-            element={isAuth ? <AddPassword /> : <Navigate replace to={"/"} />}
+            element={
+              accessToken ? <AddPassword /> : <Navigate replace to={"/"} />
+            }
           />
           <Route
             path="/allPasswords"
-            element={isAuth ? <AllPasswords /> : <Navigate replace to={"/"} />}
+            element={
+              accessToken ? <AllPasswords /> : <Navigate replace to={"/"} />
+            }
           />
         </Routes>
       </main>

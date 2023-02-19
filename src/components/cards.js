@@ -1,3 +1,5 @@
+import axios from "axios";
+import React, { useState } from "react";
 export default function CardComponent(props) {
   const {
     email,
@@ -7,6 +9,22 @@ export default function CardComponent(props) {
     websiteURL,
     _id: id,
   } = props.passwordDetailes;
+  const URL = "http://localhost:3300";
+  const accessToken = sessionStorage.getItem("access");
+  axios.defaults.headers.common["authorization"] = "Bearer " + accessToken;
+
+  // const [pass, setPass] = useState(null);
+
+  const handleViewPass = (passId) => {
+    axios
+      .get(`${URL}/pass/showPass/${passId}`)
+      .then((data) => {
+        console.log(data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
   return (
     <>
       <div className="rounded-lg shadow-md lg:max-w-sm" id={id}>
@@ -29,7 +47,12 @@ export default function CardComponent(props) {
           <p class=" text-gray-700 text-base">Username: {userName}</p>
           <p class="mb-4 text-gray-700 text-base">Password: *********</p>
           <div className="flex justify-end">
-            <button className="px-4 py-2 text-sm text-blue-100 bg-blue-500 rounded shadow">
+            <button
+              onClick={() => {
+                handleViewPass(id);
+              }}
+              className="px-4 py-2 text-sm text-blue-100 bg-blue-500 rounded shadow"
+            >
               View Password
             </button>
           </div>

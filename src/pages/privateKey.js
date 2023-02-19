@@ -47,7 +47,7 @@ export default function PrivateKey() {
               name="privateKey"
               value={privateKey}
               onChange={handleChange}
-              type="password"
+              type="text"
               className="block w-full px-4 py-2 mt-2 text-purple-700 bg-white border rounded-md focus:border-blue-400 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
             />
           </div>

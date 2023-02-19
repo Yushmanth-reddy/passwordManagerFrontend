@@ -2,13 +2,14 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 
-export default function Signin() {
+export default function Signin(props) {
   const URL = "http://localhost:3300";
   const [user, setUser] = useState({ email: "", password: "" });
   const [tokens, setTokens] = useState({});
   const [isTokenPresent, setIsTokenPresent] = useState(false);
   const navigate = useNavigate();
   axios.defaults.withCredentials = true;
+  const { setAccessToken } = props;
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -26,6 +27,7 @@ export default function Signin() {
           setTokens(response.data);
           setIsTokenPresent(true);
           sessionStorage.setItem("access", response.data.accessToken);
+          setAccessToken(response.data.accessToken);
           navigate("/privateKey");
         } else {
           console.log(response.data);
