@@ -2,11 +2,12 @@ import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 
-const SignUp = () => {
+const SignUp = (props) => {
   const URL = "http://localhost:3300";
   const [user, setUser] = useState({ email: "", name: "", password: "" });
   const [tokens, setTokens] = useState({});
   const navigate = useNavigate();
+  const { setAccessToken } = props;
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -21,8 +22,11 @@ const SignUp = () => {
       .post(`${URL}/auth/signup`, user)
       .then((response) => {
         if (response.data.accessToken) {
+          setAccessToken(response.data.accessToken);
+          sessionStorage.setItem("access", response.data.accessToken);
           setTokens(response.data);
-          console.log(tokens);
+          console.log(response.data);
+          alert(response.data.privateKey);
           navigate("/home");
         } else {
           console.log(response.data);

@@ -29,7 +29,10 @@ function App() {
             path="/signin"
             element={<Signin setAccessToken={setAccessToken} />}
           />
-          <Route path="/signup" element={<SignUp />} />
+          <Route
+            path="/signup"
+            element={<SignUp setAccessToken={setAccessToken} />}
+          />
           <Route
             path="/home"
             element={accessToken ? <Home /> : <Navigate replace to={"/"} />}
