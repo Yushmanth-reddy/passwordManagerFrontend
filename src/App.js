@@ -13,10 +13,11 @@ import Signin from "./pages/signin";
 import SignUp from "./pages/signup";
 import AllPasswords from "./pages/allPassword";
 import { useEffect, useState } from "react";
+import ProtectedRoute from "./utils/ProtectedRoutes";
 
 function App() {
-  // const accessToken = sessionStorage.getItem("access");
   const [accessToken, setAccessToken] = useState(null);
+  const [privateKey, setPrivateKey] = useState(null);
   useEffect(() => {
     setAccessToken(sessionStorage.getItem("access"));
   }, []);
@@ -29,27 +30,48 @@ function App() {
             path="/signin"
             element={<Signin setAccessToken={setAccessToken} />}
           />
-          <Route path="/signup" element={<SignUp />} />
+          <Route
+            path="/signup"
+            element={
+              <SignUp
+                setAccessToken={setAccessToken}
+                setPrivateKey={setPrivateKey}
+              />
+            }
+          />
           <Route
             path="/home"
-            element={accessToken ? <Home /> : <Navigate replace to={"/"} />}
+            element={
+              <ProtectedRoute>
+                <Home />
+              </ProtectedRoute>
+            }
           />
           <Route
             path="/privateKey"
             element={
-              accessToken ? <PrivateKey /> : <Navigate replace to={"/"} />
+              <ProtectedRoute>
+                <PrivateKey
+                  setPrivateKey={setPrivateKey}
+                  privateKey={privateKey}
+                />
+              </ProtectedRoute>
             }
           />
           <Route
             path="/addPassword"
             element={
-              accessToken ? <AddPassword /> : <Navigate replace to={"/"} />
+              <ProtectedRoute>
+                <AddPassword />
+              </ProtectedRoute>
             }
           />
           <Route
             path="/allPasswords"
             element={
-              accessToken ? <AllPasswords /> : <Navigate replace to={"/"} />
+              <ProtectedRoute>
+                <AllPasswords privateKey={privateKey} />
+              </ProtectedRoute>
             }
           />
         </Routes>

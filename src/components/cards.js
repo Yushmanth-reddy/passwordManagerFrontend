@@ -9,8 +9,10 @@ export default function CardComponent(props) {
     websiteURL,
     _id: id,
   } = props.passwordDetailes;
+  const { privateKey } = props;
   const URL = "http://localhost:3300";
   const accessToken = sessionStorage.getItem("access");
+  const [Password, setPassword] = useState("*********");
   axios.defaults.headers.common["authorization"] = "Bearer " + accessToken;
 
   // const [pass, setPass] = useState(null);
@@ -18,11 +20,16 @@ export default function CardComponent(props) {
   const handleViewPass = (passId) => {
     axios
       .get(`${URL}/pass/showPass/${passId}`)
-      .then((data) => {
-        console.log(data);
+      .then((Response) => {
+        const ResPass = Response.data.password;
+        setPassword(ResPass);
+        setTimeout(() => {
+          setPassword("*********");
+        }, 5000);
       })
       .catch((err) => {
         console.log(err);
+        alert("Invalid private key");
       });
   };
   return (
@@ -45,7 +52,7 @@ export default function CardComponent(props) {
             Site URL: {websiteURL}
           </p>
           <p class=" text-gray-700 text-base">Username: {userName}</p>
-          <p class="mb-4 text-gray-700 text-base">Password: *********</p>
+          <p class="mb-4 text-gray-700 text-base">Password: {Password}</p>
           <div className="flex justify-end">
             <button
               onClick={() => {

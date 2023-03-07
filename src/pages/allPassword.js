@@ -4,9 +4,10 @@ import CardComponent from "../components/cards";
 import { Link } from "react-router-dom";
 import axios from "axios";
 
-const AllPasswords = () => {
+const AllPasswords = (props) => {
   const URL = "http://localhost:3300";
   const accessToken = sessionStorage.getItem("access");
+  const { privateKey } = props;
   const [Passwords, setPasswords] = useState([]);
   axios.defaults.withCredentials = true;
   axios.defaults.headers.common["authorization"] = "Bearer " + accessToken;
@@ -49,7 +50,13 @@ const AllPasswords = () => {
       </div>
       <div className="mt-8 p-16 grid grid-rows-3 grid-flow-col gap-16">
         {Passwords.map((pass, i) => {
-          return <CardComponent key={i} passwordDetailes={pass} />;
+          return (
+            <CardComponent
+              key={i}
+              passwordDetailes={pass}
+              privateKey={privateKey}
+            />
+          );
         })}
       </div>
       <div>
