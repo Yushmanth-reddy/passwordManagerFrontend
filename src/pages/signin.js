@@ -78,7 +78,7 @@ export default function Signin(props) {
 
             <p className="text-lg mb-4 mt-6"> Not an User? SignUp instead!</p>
             <Link
-              // href="/signup"
+              to="/signup"
               className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded"
             >
               Sign Up

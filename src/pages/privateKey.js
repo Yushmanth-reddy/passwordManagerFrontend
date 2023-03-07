@@ -2,9 +2,9 @@ import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 
-export default function PrivateKey() {
+export default function PrivateKey(props) {
   const URL = "http://localhost:3300";
-  const [privateKey, setPrivateKey] = useState("");
+  const { setPrivateKey, privateKey } = props;
   const accessToken = sessionStorage.getItem("access");
   axios.defaults.withCredentials = true;
   axios.defaults.headers.common["authorization"] = "Bearer " + accessToken;
@@ -19,7 +19,9 @@ export default function PrivateKey() {
       .post(`${URL}/key/storeKey`, { privateKey })
       .then((Response) => {
         console.log(Response.data);
+        setPrivateKey(privateKey.replace(/\\n/g, "\n"));
         if (Response.data.msg === "Private key stored") {
+          console.log(privateKey);
           navigate("/home");
         }
       })

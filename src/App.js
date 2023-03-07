@@ -17,6 +17,7 @@ import ProtectedRoute from "./utils/ProtectedRoutes";
 
 function App() {
   const [accessToken, setAccessToken] = useState(null);
+  const [privateKey, setPrivateKey] = useState(null);
   useEffect(() => {
     setAccessToken(sessionStorage.getItem("access"));
   }, []);
@@ -31,7 +32,12 @@ function App() {
           />
           <Route
             path="/signup"
-            element={<SignUp setAccessToken={setAccessToken} />}
+            element={
+              <SignUp
+                setAccessToken={setAccessToken}
+                setPrivateKey={setPrivateKey}
+              />
+            }
           />
           <Route
             path="/home"
@@ -45,7 +51,10 @@ function App() {
             path="/privateKey"
             element={
               <ProtectedRoute>
-                <PrivateKey />
+                <PrivateKey
+                  setPrivateKey={setPrivateKey}
+                  privateKey={privateKey}
+                />
               </ProtectedRoute>
             }
           />
@@ -61,7 +70,7 @@ function App() {
             path="/allPasswords"
             element={
               <ProtectedRoute>
-                <AllPasswords />
+                <AllPasswords privateKey={privateKey} />
               </ProtectedRoute>
             }
           />

@@ -5,9 +5,8 @@ import { useState } from "react";
 const SignUp = (props) => {
   const URL = "http://localhost:3300";
   const [user, setUser] = useState({ email: "", name: "", password: "" });
-  const [tokens, setTokens] = useState({});
   const navigate = useNavigate();
-  const { setAccessToken } = props;
+  const { setAccessToken, setPrivateKey } = props;
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -24,9 +23,10 @@ const SignUp = (props) => {
         if (response.data.accessToken) {
           setAccessToken(response.data.accessToken);
           sessionStorage.setItem("access", response.data.accessToken);
-          setTokens(response.data);
-          console.log(response.data);
-          alert(response.data.privateKey);
+          const xyw = response.data.privateKey;
+          console.log({ xyw });
+          // alert(response.data.privateKey);
+          setPrivateKey({ xyw });
           navigate("/home");
         } else {
           console.log(response.data);
@@ -35,7 +35,6 @@ const SignUp = (props) => {
       .catch((err) => {
         console.log(err);
       });
-    console.log(user);
   };
 
   return (

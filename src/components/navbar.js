@@ -2,6 +2,12 @@ import { Link, useNavigate } from "react-router-dom";
 
 export default function Navbar() {
   const navigate = useNavigate();
+
+  const handleLogout = () => {
+    sessionStorage.removeItem("access");
+    navigate("/signin");
+  };
+
   return (
     <nav className="bg-white px-2 sm:px-4 py-2.5 fixed w-full z-20 top-0 left-0 border-b border-gray-200">
       <div className="container flex flex-wrap items-center justify-between mx-auto">
@@ -16,14 +22,11 @@ export default function Navbar() {
           </span>
         </a>
         <div className="flex md:order-2">
-          <button>
-            <Link
-              // type="button"
-              // href="/signin"
-              className="text-white bg-blue-500 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-3 md:mr-0"
-            >
-              Logout
-            </Link>
+          <button
+            onClick={handleLogout}
+            className="text-white bg-blue-500 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-3 md:mr-0"
+          >
+            Logout
           </button>
           <button
             data-collapse-toggle="navbar-sticky"

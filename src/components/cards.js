@@ -9,6 +9,7 @@ export default function CardComponent(props) {
     websiteURL,
     _id: id,
   } = props.passwordDetailes;
+  const { privateKey } = props;
   const URL = "http://localhost:3300";
   const accessToken = sessionStorage.getItem("access");
   const [Password, setPassword] = useState("*********");
@@ -28,6 +29,7 @@ export default function CardComponent(props) {
       })
       .catch((err) => {
         console.log(err);
+        alert("Invalid private key");
       });
   };
   return (
