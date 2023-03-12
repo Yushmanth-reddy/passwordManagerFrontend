@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, { useState } from "react";
 import jwt_decode from "jwt-decode";
+import { useNavigate } from "react-router-dom";
 export default function CardComponent(props) {
   const {
     email,
@@ -15,12 +16,13 @@ export default function CardComponent(props) {
   const accessToken = sessionStorage.getItem("access");
   const [Password, setPassword] = useState("*********");
   axios.defaults.headers.common["authorization"] = "Bearer " + accessToken;
-
+  const reqData = { privateKey };
+  const Navigate = useNavigate();
   const axiosJWT = axios.create();
 
   const handleViewPass = (passId) => {
     axiosJWT
-      .get(`${URL}/pass/showPass/${passId}`)
+      .post(`${URL}/pass/showPass/${passId}`, reqData)
       .then((Response) => {
         const ResPass = Response.data.password;
         setPassword(ResPass);
@@ -30,8 +32,11 @@ export default function CardComponent(props) {
       })
       .catch((err) => {
         console.log(err);
-        // alert("Invalid private key");
+        alert("Invalid private key");
       });
+  };
+  const handleEditPass = (passId) => {
+    Navigate(`/editPassword?id=${passId}`);
   };
 
   const newTokenGenerator = async () => {
@@ -90,6 +95,15 @@ export default function CardComponent(props) {
           <p class=" text-gray-700 text-base">Username: {userName}</p>
           <p class="mb-4 text-gray-700 text-base">Password: {Password}</p>
           <div className="flex justify-end">
+            <button
+              onClick={() => {
+                handleEditPass(id);
+              }}
+              className="px-4 py-2 mr-2 text-sm text-blue-100 bg-blue-500 rounded shadow"
+            >
+              Edit Password
+            </button>
+
             <button
               onClick={() => {
                 handleViewPass(id);

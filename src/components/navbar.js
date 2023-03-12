@@ -71,6 +71,14 @@ export default function Navbar() {
                 Add Password
               </Link>
             </li>
+            <li>
+              <Link
+                to="/privateKey"
+                className="block py-2 pl-3 pr-4 text-gray-700 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0"
+              >
+                Private Key
+              </Link>
+            </li>
           </ul>
         </div>
       </div>

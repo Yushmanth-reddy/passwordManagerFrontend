@@ -14,8 +14,18 @@ import SignUp from "./pages/signup";
 import AllPasswords from "./pages/allPassword";
 import { useEffect, useState } from "react";
 import ProtectedRoute from "./utils/ProtectedRoutes";
+import EditPassword from "./pages/editPassword";
 
 function App() {
+  const [loading, setLoading] = useState(true);
+  const spinner = document.getElementById("spinner");
+  if (spinner) {
+    setTimeout(() => {
+      spinner.style.display = "none";
+      setLoading(false);
+    }, 3000);
+  }
+
   const [accessToken, setAccessToken] = useState(null);
   const [privateKey, setPrivateKey] = useState(null);
   useEffect(() => {
@@ -36,6 +46,7 @@ function App() {
               <SignUp
                 setAccessToken={setAccessToken}
                 setPrivateKey={setPrivateKey}
+                privateKey={privateKey}
               />
             }
           />
@@ -66,6 +77,16 @@ function App() {
               </ProtectedRoute>
             }
           />
+
+          <Route
+            path="/editPassword"
+            element={
+              <ProtectedRoute>
+                <EditPassword privateKey={privateKey} />
+              </ProtectedRoute>
+            }
+          />
+
           <Route
             path="/allPasswords"
             element={

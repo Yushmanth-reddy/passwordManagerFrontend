@@ -14,19 +14,10 @@ export default function PrivateKey(props) {
   const axiosJWT = axios.create();
 
   const checkPrivate = async () => {
-    await axiosJWT
-      .post(`${URL}/key/storeKey`, { privateKey })
-      .then((Response) => {
-        console.log(Response.data);
-        setPrivateKey(privateKey.replace(/\\n/g, "\n"));
-        if (Response.data.msg === "Private key stored") {
-          console.log(privateKey);
-          navigate("/home");
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    setPrivateKey(privateKey.replace(/\\n/g, "\n"));
+    if (privateKey !== "") {
+      navigate("/home");
+    }
   };
 
   const handleChange = (e) => {
@@ -85,7 +76,7 @@ export default function PrivateKey(props) {
               name="privateKey"
               value={privateKey}
               onChange={handleChange}
-              type="text"
+              type="password"
               className="block w-full px-4 py-2 mt-2 text-purple-700 bg-white border rounded-md focus:border-blue-400 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
             />
           </div>
