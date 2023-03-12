@@ -3,6 +3,7 @@ import Navbar from "../components/navbar";
 import CardComponent from "../components/cards";
 import { Link } from "react-router-dom";
 import axios from "axios";
+import jwt_decode from "jwt-decode";
 
 const AllPasswords = (props) => {
   const URL = "http://localhost:3300";
@@ -12,19 +13,59 @@ const AllPasswords = (props) => {
   axios.defaults.withCredentials = true;
   axios.defaults.headers.common["authorization"] = "Bearer " + accessToken;
 
+  const axiosJWT = axios.create();
+
   useEffect(() => {
     async function fetchData() {
-      await axios
+      await axiosJWT
         .get(`${URL}/pass/getallpass`)
         .then((response) => {
           setPasswords(response.data);
         })
         .catch((err) => {
           console.log(err);
+          if (err.response.data.msg === "jwt expired") {
+            alert("User logged out");
+            sessionStorage.removeItem("access");
+            window.location.reload(false);
+          }
         });
     }
     fetchData();
   }, []);
+
+  const newTokenGenerator = async () => {
+    await axios
+      .post(`${URL}/auth/refresh-token`)
+      .then((response) => {
+        const { accessToken } = response.data;
+        if (!accessToken) {
+          console.log("User unauthorised");
+        } else {
+          console.log(accessToken);
+          sessionStorage.setItem("access", accessToken);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  axiosJWT.interceptors.request.use(
+    async (config) => {
+      let currentDate = new Date();
+      const decodedToken = jwt_decode(sessionStorage.getItem("access"));
+      if (decodedToken.exp * 1000 < currentDate.getTime()) {
+        const data = await newTokenGenerator();
+        config.headers["authorization"] =
+          "Bearer " + sessionStorage.getItem("access");
+      }
+      return config;
+    },
+    (error) => {
+      return Promise.reject(error);
+    }
+  );
 
   return (
     <div className="bg-white">

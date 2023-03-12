@@ -1,5 +1,6 @@
 import axios from "axios";
 import React, { useState } from "react";
+import jwt_decode from "jwt-decode";
 export default function CardComponent(props) {
   const {
     email,
@@ -15,10 +16,10 @@ export default function CardComponent(props) {
   const [Password, setPassword] = useState("*********");
   axios.defaults.headers.common["authorization"] = "Bearer " + accessToken;
 
-  // const [pass, setPass] = useState(null);
+  const axiosJWT = axios.create();
 
   const handleViewPass = (passId) => {
-    axios
+    axiosJWT
       .get(`${URL}/pass/showPass/${passId}`)
       .then((Response) => {
         const ResPass = Response.data.password;
@@ -29,9 +30,44 @@ export default function CardComponent(props) {
       })
       .catch((err) => {
         console.log(err);
-        alert("Invalid private key");
+        // alert("Invalid private key");
       });
   };
+
+  const newTokenGenerator = async () => {
+    await axios
+      .post(`${URL}/auth/refresh-token`)
+      .then((response) => {
+        const { accessToken } = response.data;
+        if (!accessToken) {
+          console.log("User unauthorised");
+        } else {
+          // console.log(accessToken, "hello");
+          sessionStorage.setItem("access", accessToken);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  axiosJWT.interceptors.request.use(
+    async (config) => {
+      let currentDate = new Date();
+      // console.log(sessionStorage.getItem("access"));
+      const decodedToken = jwt_decode(sessionStorage.getItem("access"));
+      if (decodedToken.exp * 1000 < currentDate.getTime()) {
+        const data = await newTokenGenerator();
+        config.headers["authorization"] =
+          "Bearer " + sessionStorage.getItem("access");
+      }
+      return config;
+    },
+    (error) => {
+      return Promise.reject(error);
+    }
+  );
+
   return (
     <>
       <div className="rounded-lg shadow-md lg:max-w-sm" id={id}>

@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Navbar from "../components/navbar";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import jwt_decode from "jwt-decode";
 
 const AddPassword = () => {
   const URL = "http://localhost:3300";
@@ -10,6 +11,8 @@ const AddPassword = () => {
   const accessToken = sessionStorage.getItem("access");
   axios.defaults.withCredentials = true;
   axios.defaults.headers.common["authorization"] = "Bearer " + accessToken;
+
+  const axiosJWT = axios.create();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -22,7 +25,7 @@ const AddPassword = () => {
   const handleAddPassword = async (e) => {
     e.preventDefault();
     if (passDetailes.confirm_password === passDetailes.password) {
-      await axios
+      await axiosJWT
         .post(`${URL}/pass/addPass`, passDetailes)
         .then((response) => {
           console.log(response.data);
@@ -37,6 +40,39 @@ const AddPassword = () => {
       alert("Passwords not same");
     }
   };
+
+  const newTokenGenerator = async () => {
+    await axios
+      .post(`${URL}/auth/refresh-token`)
+      .then((response) => {
+        const { accessToken } = response.data;
+        if (!accessToken) {
+          console.log("User unauthorised");
+        } else {
+          console.log(accessToken);
+          sessionStorage.setItem("access", accessToken);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  axiosJWT.interceptors.request.use(
+    async (config) => {
+      let currentDate = new Date();
+      const decodedToken = jwt_decode(sessionStorage.getItem("access"));
+      if (decodedToken.exp * 1000 < currentDate.getTime()) {
+        const data = await newTokenGenerator();
+        config.headers["authorization"] =
+          "Bearer " + sessionStorage.getItem("access");
+      }
+      return config;
+    },
+    (error) => {
+      return Promise.reject(error);
+    }
+  );
 
   return (
     <div className="h-screen bg-white">

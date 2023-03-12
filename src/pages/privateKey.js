@@ -1,6 +1,7 @@
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
+import jwt_decode from "jwt-decode";
 
 export default function PrivateKey(props) {
   const URL = "http://localhost:3300";
@@ -10,12 +11,10 @@ export default function PrivateKey(props) {
   axios.defaults.headers.common["authorization"] = "Bearer " + accessToken;
   const navigate = useNavigate();
 
-  const handleChange = (e) => {
-    setPrivateKey(e.target.value);
-  };
+  const axiosJWT = axios.create();
 
   const checkPrivate = async () => {
-    await axios
+    await axiosJWT
       .post(`${URL}/key/storeKey`, { privateKey })
       .then((Response) => {
         console.log(Response.data);
@@ -29,6 +28,43 @@ export default function PrivateKey(props) {
         console.log(err);
       });
   };
+
+  const handleChange = (e) => {
+    setPrivateKey(e.target.value);
+  };
+
+  const newTokenGenerator = async () => {
+    await axios
+      .post(`${URL}/auth/refresh-token`)
+      .then((response) => {
+        const { accessToken } = response.data;
+        if (!accessToken) {
+          console.log("User unauthorised");
+        } else {
+          console.log(accessToken);
+          sessionStorage.setItem("access", accessToken);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  axiosJWT.interceptors.request.use(
+    async (config) => {
+      let currentDate = new Date();
+      const decodedToken = jwt_decode(sessionStorage.getItem("access"));
+      if (decodedToken.exp * 1000 < currentDate.getTime()) {
+        const data = await newTokenGenerator();
+        config.headers["authorization"] =
+          "Bearer " + sessionStorage.getItem("access");
+      }
+      return config;
+    },
+    (error) => {
+      return Promise.reject(error);
+    }
+  );
 
   return (
     <div className="relative flex flex-col justify-center min-h-screen overflow-hidden">
