@@ -1,20 +1,45 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Navbar from "../components/navbar";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import axios from "axios";
 import jwt_decode from "jwt-decode";
 
-const AddPassword = () => {
+const EditPassword = (props) => {
   const URL = "http://localhost:3300";
   const [passDetailes, setPassDetailes] = useState({});
   const navigate = useNavigate();
   const accessToken = sessionStorage.getItem("access");
   axios.defaults.withCredentials = true;
   axios.defaults.headers.common["authorization"] = "Bearer " + accessToken;
+  const [searchParams, setSearchParams] = useSearchParams();
+  const passId = searchParams.get("id");
+  const { privateKey } = props;
+  const reqData = { privateKey };
   const [isVisible, setIsVisible] = useState(false);
   const [isVisible2, setIsVisible2] = useState(false);
 
   const axiosJWT = axios.create();
+  useEffect(() => {
+    async function fetchData() {
+      await axiosJWT
+        .post(`${URL}/pass/getpass/${passId}`, reqData)
+        .then((response) => {
+          passDetailes.websiteURL = response.data.websiteURL;
+          passDetailes.Title = response.data.siteTitle;
+          passDetailes.password = response.data.password;
+          passDetailes.username = response.data.userName;
+        })
+        .catch((err) => {
+          console.log(err);
+          if (err.response.data.msg === "jwt expired") {
+            alert("User logged out");
+            sessionStorage.removeItem("access");
+            window.location.reload(false);
+          }
+        });
+    }
+    fetchData();
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -24,14 +49,14 @@ const AddPassword = () => {
     });
   };
 
-  const handleAddPassword = async (e) => {
+  const handleEditPassword = async (e) => {
     e.preventDefault();
     if (passDetailes.confirm_password === passDetailes.password) {
       await axiosJWT
-        .post(`${URL}/pass/addPass`, passDetailes)
+        .put(`${URL}/pass/updatePass/${passId}`, passDetailes)
         .then((response) => {
           console.log(response.data);
-          if (response.data.msg === "password stored") {
+          if (response.data.msg === "Password updated") {
             navigate("/allPasswords");
           }
         })
@@ -41,6 +66,20 @@ const AddPassword = () => {
     } else {
       alert("Passwords not same");
     }
+  };
+  const handleDelete = async () => {
+    await axiosJWT
+      .delete(`${URL}/pass/delPass/${passId}`)
+      .then((response) => {
+        console.log(response.data);
+        if (response.data.msg === "Password deleted") {
+          alert("Password deleted");
+          navigate("/allPasswords");
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
   const newTokenGenerator = async () => {
@@ -79,11 +118,8 @@ const AddPassword = () => {
   return (
     <div className="h-screen bg-white">
       <Navbar className="" />
-      <form onSubmit={handleAddPassword}>
-        <div
-          className="bg-white p-8
-        "
-        >
+      <form onSubmit={handleEditPassword}>
+        <div className="bg-white p-8">
           <div class=" mt-20 mb-6">
             <label
               for="email"
@@ -144,7 +180,7 @@ const AddPassword = () => {
               for="password"
               class="block mb-2 ml-1 text-sm font-medium text-gray-900 "
             >
-              Password
+              New Password
             </label>
             <input
               type={isVisible2 ? "text" : "password"}
@@ -199,6 +235,7 @@ const AddPassword = () => {
               )}
             </p>
           </div>
+
           <div class="mb-6">
             <label
               for="confirm_password"
@@ -212,7 +249,7 @@ const AddPassword = () => {
               name="confirm_password"
               value={passDetailes.confirm_password}
               onChange={handleChange}
-              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
+              class="block bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
               placeholder="•••••••••"
               required
             />
@@ -278,12 +315,20 @@ const AddPassword = () => {
               I agree with the terms and conditions.
             </label>
           </div>
-          <div className="flex justify-end">
+
+          <div className="flex justify-between">
+            <button
+              onClick={handleDelete}
+              className="text-white flex flex-col sm:text-center justify-end bg-blue-500 hover:bg-red-400 transition-colors duration-300 ease-in-out focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center "
+            >
+              Delete
+            </button>
+
             <button
               type="submit"
               className="text-white flex flex-col sm:text-center justify-end bg-blue-500 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center "
             >
-              Add
+              Update
             </button>
           </div>
         </div>
@@ -291,4 +336,4 @@ const AddPassword = () => {
     </div>
   );
 };
-export default AddPassword;
+export default EditPassword;

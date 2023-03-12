@@ -1,70 +1,65 @@
-# Getting Started with Create React App
+# PassMan - A Cryptographically Secured Password Manager
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Passman is a password manager built with the MERN (MongoDB, Express, React, Node.js) stack that uses the RSA (Rivest–Shamir–Adleman) cryptographic algorithm for encryption and decryption of user passwords. This application provides a secure and user-friendly interface for storing and managing passwords, ensuring that users can have access to their accounts' credentials with ease.
 
-## Available Scripts
+# Features
 
-In the project directory, you can run:
+- Secure storage of user passwords in an encrypted database
+- Use of RSA algorithm to encrypt and decrypt user passwords
+- Automatic password generation for strong and unique passwords
+- Simple and intuitive user interface for easy password management
+- Public Private key encryction for maximum security
+- Private key is not stored anywhere in our databases
+- Multi-language support (English and Spanish)
+
+# Technologies Used
+
+- MongoDB as the database
+- Express as the web application framework
+- React as the front-end framework
+- Node.js as the back-end runtime environment
+- RSA module for password encryption and decryption
+- Material-UI for front-end design and styling
+- Axios for HTTP requests
+- JWT for token-based authentication
+
+# Installation
+
+1. Clone the Repository from Github:
+
+### `git clone https://github.com/your_username/passman.git`
+
+2. Install the required packages in the server and client directories:
+
+### `cd npm install`
+
+### `npm i`
+
+3. Run the server:
 
 ### `npm start`
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+4. Run the client:
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+### `npm start`
 
-### `npm test`
+5. Open your web browser and navigate to http://localhost:3000 to access the password manager.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+# Usage
 
-### `npm run build`
+1. Create an account by providing your email address and a master password.
+2. Use the password manager to store your usernames and passwords for various accounts.
+3. Use the password strength meter to ensure that your passwords are strong and secure.
+4. Enable multi-factor authentication for added security.
+5. Share your passwords with other authorized users.
+6. Set automatic password expiry and change notifications to ensure that your passwords are always up to date.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+# Security
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+Passman uses the RSA algorithm for password encryption and decryption. User passwords are encrypted before storing them in the database and are decrypted when accessed by authorized users. The application also uses Passport.js for authentication, which ensures that only authorized users can access the password manager. JWT tokens are used to authenticate users and authorize their access to the password manager.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## Team Members
 
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+1. Harshith Mentee | 2021IMT-063
+2. Ponnolu Yushmanth Pali Reddy | 2021IMT-075
+3. Avijeet Jain | 2021IMG-018

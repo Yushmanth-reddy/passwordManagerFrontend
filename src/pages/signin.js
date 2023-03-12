@@ -19,7 +19,8 @@ export default function Signin(props) {
     });
   };
 
-  const handleSignin = async () => {
+  const handleSignin = async (e) => {
+    e.preventDefault();
     await axios
       .post(`${URL}/auth/signin`, user)
       .then((response) => {
@@ -41,7 +42,7 @@ export default function Signin(props) {
 
   return (
     <>
-      <main className="bg-white flex flex-col items-center justify-center min-h-screen w-full text-center px-20 ">
+      {/* <main className="bg-white flex flex-col items-center justify-center min-h-screen w-full text-center px-20 ">
         <div className="rounded-2xl flex w-2/3 max-w-4xl">
           <div className=" bg-slate-400 w-3/5 p-5 rounded-tl-2xl rounded-bl-2xl ">
             <div className="py-10">
@@ -93,7 +94,61 @@ export default function Signin(props) {
             </p>
           </div>
         </div>
-      </main>
+      </main> */}
+      <div className="relative flex flex-col justify-center min-h-screen overflow-hidden ">
+        <div className="w-full p-6 m-auto bg-white rounded-md shadow-xl lg:max-w-xl">
+          <h1 className="text-3xl text-blue-500 ">Welcome Back!</h1>
+          <form className="mt-6" onSubmit={handleSignin}>
+            <div className="mb-2">
+              <label for="email" className=" text-sm text-gray-800">
+                Email
+              </label>
+              <input
+                type="text"
+                name="email"
+                value={user.email}
+                onChange={handleChange}
+                id="large-input1"
+                className=" w-full px-4 py-2 mt-2 text-blue-500 bg-white border rounded-md focus:border-blue-400 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
+              />
+            </div>
+            <div className="mb-2">
+              <label for="password" className=" text-sm text-gray-800">
+                Password
+              </label>
+              <input
+                name="password"
+                value={user.password}
+                onChange={handleChange}
+                type="password"
+                id="large-input2"
+                className="block w-full px-4 py-2 mt-2 text-blue-500 bg-white border rounded-md focus:border-blue-400 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
+              />
+            </div>
+
+            <div className="mt-6">
+              <button
+                type="submit"
+                // onClick={handleSignin}
+                className="w-full px-4 py-2 tracking-wide text-white transition-colors duration-200 transform bg-blue-500 rounded-md hover:bg-blue-500 focus:outline-none focus:bg-blue-600"
+              >
+                Login
+              </button>
+            </div>
+          </form>
+
+          <p className="mt-8 text-xs font-light text-center text-gray-700">
+            {" "}
+            Don't have an account?{" "}
+            <Link
+              to="/signup"
+              className="font-medium text-blue-500 hover:underline"
+            >
+              Sign up
+            </Link>
+          </p>
+        </div>
+      </div>
     </>
   );
 }

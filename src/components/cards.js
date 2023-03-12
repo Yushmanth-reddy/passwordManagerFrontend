@@ -1,5 +1,7 @@
 import axios from "axios";
 import React, { useState } from "react";
+import jwt_decode from "jwt-decode";
+import { useNavigate } from "react-router-dom";
 export default function CardComponent(props) {
   const {
     email,
@@ -14,12 +16,13 @@ export default function CardComponent(props) {
   const accessToken = sessionStorage.getItem("access");
   const [Password, setPassword] = useState("*********");
   axios.defaults.headers.common["authorization"] = "Bearer " + accessToken;
-
-  // const [pass, setPass] = useState(null);
+  const reqData = { privateKey };
+  const Navigate = useNavigate();
+  const axiosJWT = axios.create();
 
   const handleViewPass = (passId) => {
-    axios
-      .get(`${URL}/pass/showPass/${passId}`)
+    axiosJWT
+      .post(`${URL}/pass/showPass/${passId}`, reqData)
       .then((Response) => {
         const ResPass = Response.data.password;
         setPassword(ResPass);
@@ -32,6 +35,44 @@ export default function CardComponent(props) {
         alert("Invalid private key");
       });
   };
+  const handleEditPass = (passId) => {
+    Navigate(`/editPassword?id=${passId}`);
+  };
+
+  const newTokenGenerator = async () => {
+    await axios
+      .post(`${URL}/auth/refresh-token`)
+      .then((response) => {
+        const { accessToken } = response.data;
+        if (!accessToken) {
+          console.log("User unauthorised");
+        } else {
+          // console.log(accessToken, "hello");
+          sessionStorage.setItem("access", accessToken);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  axiosJWT.interceptors.request.use(
+    async (config) => {
+      let currentDate = new Date();
+      // console.log(sessionStorage.getItem("access"));
+      const decodedToken = jwt_decode(sessionStorage.getItem("access"));
+      if (decodedToken.exp * 1000 < currentDate.getTime()) {
+        const data = await newTokenGenerator();
+        config.headers["authorization"] =
+          "Bearer " + sessionStorage.getItem("access");
+      }
+      return config;
+    },
+    (error) => {
+      return Promise.reject(error);
+    }
+  );
+
   return (
     <>
       <div className="rounded-lg shadow-md lg:max-w-sm" id={id}>
@@ -54,6 +95,15 @@ export default function CardComponent(props) {
           <p class=" text-gray-700 text-base">Username: {userName}</p>
           <p class="mb-4 text-gray-700 text-base">Password: {Password}</p>
           <div className="flex justify-end">
+            <button
+              onClick={() => {
+                handleEditPass(id);
+              }}
+              className="px-4 py-2 mr-2 text-sm text-blue-100 bg-blue-500 rounded shadow"
+            >
+              Edit Password
+            </button>
+
             <button
               onClick={() => {
                 handleViewPass(id);
