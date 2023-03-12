@@ -89,7 +89,7 @@ const AllPasswords = (props) => {
           Add New Password
         </button> */}
       </div>
-      <div className="mt-8 p-16 grid grid-rows-3 grid-flow-col gap-16">
+      <div className="mt-8 p-16 grid grid-rows-3 grid-flow-row gap-16">
         {Passwords.map((pass, i) => {
           return (
             <CardComponent

@@ -15,6 +15,7 @@ import AllPasswords from "./pages/allPassword";
 import { useEffect, useState } from "react";
 import ProtectedRoute from "./utils/ProtectedRoutes";
 import EditPassword from "./pages/editPassword";
+import LandingPage from "./pages/landingPage";
 
 function App() {
   const [loading, setLoading] = useState(true);
@@ -35,7 +36,7 @@ function App() {
     <BrowserRouter>
       <main>
         <Routes>
-          <Route exact path="/" element={<a />} />
+          <Route exact path="/" element={<LandingPage />} />
           <Route
             path="/signin"
             element={<Signin setAccessToken={setAccessToken} />}
