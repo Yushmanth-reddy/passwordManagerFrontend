@@ -4,7 +4,7 @@ import { useState } from "react";
 import Modal from "../components/Popup";
 
 const SignUp = (props) => {
-  const URL = "http://localhost:3300";
+  const URL = "https://adorable-gumption-c44302.netlify.app";
   const [user, setUser] = useState({ email: "", name: "", password: "" });
   const navigate = useNavigate();
   const { setAccessToken, setPrivateKey, privateKey } = props;

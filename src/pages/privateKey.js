@@ -4,7 +4,7 @@ import { useState } from "react";
 import jwt_decode from "jwt-decode";
 
 export default function PrivateKey(props) {
-  const URL = "http://localhost:3300";
+  const URL = "https://adorable-gumption-c44302.netlify.app";
   const { setPrivateKey, privateKey } = props;
   const accessToken = sessionStorage.getItem("access");
   axios.defaults.withCredentials = true;

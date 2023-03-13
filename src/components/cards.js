@@ -12,7 +12,7 @@ export default function CardComponent(props) {
     _id: id,
   } = props.passwordDetailes;
   const { privateKey } = props;
-  const URL = "http://localhost:3300";
+  const URL = "https://adorable-gumption-c44302.netlify.app";
   const accessToken = sessionStorage.getItem("access");
   const [Password, setPassword] = useState("*********");
   axios.defaults.headers.common["authorization"] = "Bearer " + accessToken;
