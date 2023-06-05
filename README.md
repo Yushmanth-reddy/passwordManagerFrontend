@@ -10,7 +10,12 @@ Passman is a password manager built with the MERN (MongoDB, Express, React, Node
 - Simple and intuitive user interface for easy password management
 - Public Private key encryction for maximum security
 - Private key is not stored anywhere in our databases
-- Multi-language support (English and Spanish)
+
+## Repositories
+
+Frontend: [Password Manager](https://github.com/Yushmanth-reddy/passwordManagerFrontend)
+
+Backend: [Password Manager](https://github.com/Yushmanth-reddy/password-manager-backend)
 
 # Technologies Used
 
@@ -49,10 +54,14 @@ Passman is a password manager built with the MERN (MongoDB, Express, React, Node
 
 1. Create an account by providing your email address and a master password.
 2. Use the password manager to store your usernames and passwords for various accounts.
-3. Use the password strength meter to ensure that your passwords are strong and secure.
-4. Enable multi-factor authentication for added security.
-5. Share your passwords with other authorized users.
-6. Set automatic password expiry and change notifications to ensure that your passwords are always up to date.
+
+# Future Tasks
+
+1. password strength meter to ensure that your passwords are strong and secure.
+2. Enable multi-factor authentication for added security.
+3. Share your passwords with other authorized users.
+4. Set automatic password expiry and change notifications to ensure that your passwords are always up to date.
+
 
 # Security
 
