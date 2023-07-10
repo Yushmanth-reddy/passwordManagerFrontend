@@ -5,7 +5,7 @@ import axios from "axios";
 import jwt_decode from "jwt-decode";
 
 const EditPassword = (props) => {
-  const URL = "https://adorable-gumption-c44302.netlify.app";
+  const URL = "http://localhost:3300";
   const [passDetailes, setPassDetailes] = useState({});
   const navigate = useNavigate();
   const accessToken = sessionStorage.getItem("access");
@@ -28,6 +28,7 @@ const EditPassword = (props) => {
           passDetailes.Title = response.data.siteTitle;
           passDetailes.password = response.data.password;
           passDetailes.username = response.data.userName;
+          console.log(passDetailes);
         })
         .catch((err) => {
           console.log(err);

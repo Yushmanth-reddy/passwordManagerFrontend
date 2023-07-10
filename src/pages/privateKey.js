@@ -1,12 +1,13 @@
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import jwt_decode from "jwt-decode";
+import { PrivateKeyContext } from "../context/privateKeyContext";
+import { RefreshTokenRoute } from "../utils/APIendpoints";
 
 export default function PrivateKey(props) {
-  const URL = "https://adorable-gumption-c44302.netlify.app";
-  const { setPrivateKey, privateKey } = props;
-  const accessToken = sessionStorage.getItem("access");
+  const { setPrivateKey, privateKey } = useContext(PrivateKeyContext);
+  const accessToken = localStorage.getItem("accessToken");
   axios.defaults.withCredentials = true;
   axios.defaults.headers.common["authorization"] = "Bearer " + accessToken;
   const navigate = useNavigate();
@@ -22,33 +23,32 @@ export default function PrivateKey(props) {
 
   const handleChange = (e) => {
     setPrivateKey(e.target.value);
+    // console.log(privateKey);
   };
 
   const newTokenGenerator = async () => {
-    await axios
-      .post(`${URL}/auth/refresh-token`)
-      .then((response) => {
-        const { accessToken } = response.data;
-        if (!accessToken) {
-          console.log("User unauthorised");
-        } else {
-          console.log(accessToken);
-          sessionStorage.setItem("access", accessToken);
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    try {
+      const response = await axios.post(RefreshTokenRoute);
+      const accessToken = response.data;
+      if (accessToken) {
+        localStorage.setItem("accessToken", accessToken);
+      } else {
+        console.log("User unauthorised");
+      }
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   axiosJWT.interceptors.request.use(
     async (config) => {
       let currentDate = new Date();
-      const decodedToken = jwt_decode(sessionStorage.getItem("access"));
+      const decodedToken = jwt_decode(localStorage.getItem("accessToken"));
+      console.log("hello");
       if (decodedToken.exp * 1000 < currentDate.getTime()) {
         const data = await newTokenGenerator();
         config.headers["authorization"] =
-          "Bearer " + sessionStorage.getItem("access");
+          "Bearer " + localStorage.getItem("accessToken");
       }
       return config;
     },

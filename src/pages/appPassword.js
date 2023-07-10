@@ -5,7 +5,7 @@ import axios from "axios";
 import jwt_decode from "jwt-decode";
 
 const AddPassword = () => {
-  const URL = "https://adorable-gumption-c44302.netlify.app";
+  const URL = "http://localhost:3300";
   const [passDetailes, setPassDetailes] = useState({});
   const navigate = useNavigate();
   const accessToken = sessionStorage.getItem("access");

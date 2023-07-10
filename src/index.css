@@ -140,6 +140,13 @@ body {
   padding: 4rem 0;
 }
 
+.loading {
+  font-size: 30px;
+  text-align: center;
+  position: relative;
+  top: 200px;
+}
+
 .center::before {
   background: var(--secondary-glow);
   border-radius: 50%;

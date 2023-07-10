@@ -12,10 +12,11 @@ import PrivateKey from "./pages/privateKey";
 import Signin from "./pages/signin";
 import SignUp from "./pages/signup";
 import AllPasswords from "./pages/allPassword";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import ProtectedRoute from "./utils/ProtectedRoutes";
 import EditPassword from "./pages/editPassword";
 import LandingPage from "./pages/landingPage";
+import { PrivateKeyContext } from "./context/privateKeyContext";
 
 function App() {
   const [loading, setLoading] = useState(true);
@@ -28,7 +29,7 @@ function App() {
   }
 
   const [accessToken, setAccessToken] = useState(null);
-  const [privateKey, setPrivateKey] = useState(null);
+  const { privateKey, setPrivateKey } = useContext(PrivateKeyContext);
   useEffect(() => {
     setAccessToken(sessionStorage.getItem("access"));
   }, []);

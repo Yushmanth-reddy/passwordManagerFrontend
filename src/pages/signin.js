@@ -1,12 +1,13 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
+import { signInRoute } from "../utils/APIendpoints";
 
 export default function Signin(props) {
-  const URL = "https://adorable-gumption-c44302.netlify.app";
   const [user, setUser] = useState({ email: "", password: "" });
   const [tokens, setTokens] = useState({});
   const [isTokenPresent, setIsTokenPresent] = useState(false);
+  const [errors, setErrors] = useState();
   const navigate = useNavigate();
   axios.defaults.withCredentials = true;
   const { setAccessToken } = props;
@@ -21,23 +22,34 @@ export default function Signin(props) {
 
   const handleSignin = async (e) => {
     e.preventDefault();
-    await axios
-      .post(`${URL}/auth/signin`, user)
-      .then((response) => {
-        if (response.data.accessToken) {
-          setTokens(response.data);
-          setIsTokenPresent(true);
-          sessionStorage.setItem("access", response.data.accessToken);
-          setAccessToken(response.data.accessToken);
-          navigate("/privateKey");
-        } else {
-          console.log(response.data);
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-        setIsTokenPresent(false);
-      });
+    try {
+      const { data } = await axios.post(signInRoute, user);
+      if (data.accessToken) {
+        console.log(data);
+        localStorage.setItem("accessToken", data.accessToken);
+        navigate("/privateKey");
+      }
+    } catch (err) {
+      setErrors(err);
+      console.log(err);
+    }
+    // await axios
+    //   .post(`${URL}/auth/signin`, user)
+    //   .then((response) => {
+    //     if (response.data.accessToken) {
+    //       setTokens(response.data);
+    //       setIsTokenPresent(true);
+    //       sessionStorage.setItem("access", response.data.accessToken);
+    //       setAccessToken(response.data.accessToken);
+    //       navigate("/privateKey");
+    //     } else {
+    //       console.log(response.data);
+    //     }
+    //   })
+    //   .catch((err) => {
+    //     console.log(err);
+    //     setIsTokenPresent(false);
+    //   });
   };
 
   return (
@@ -125,7 +137,9 @@ export default function Signin(props) {
                 className="block w-full px-4 py-2 mt-2 text-blue-500 bg-white border rounded-md focus:border-blue-400 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
               />
             </div>
-
+            {errors && (
+              <span align="center">{errors.response.data.message}</span>
+            )}
             <div className="mt-6">
               <button
                 type="submit"

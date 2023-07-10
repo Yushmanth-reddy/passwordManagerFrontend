@@ -4,7 +4,7 @@ const ProtectedRoute = (props) => {
   const navigate = useNavigate();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const checkUserToken = () => {
-    const userToken = sessionStorage.getItem("access");
+    const userToken = localStorage.getItem("accessToken");
     if (!userToken || userToken === "undefined") {
       setIsLoggedIn(false);
       return navigate("/signin");
