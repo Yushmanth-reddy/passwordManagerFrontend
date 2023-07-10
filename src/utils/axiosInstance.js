@@ -25,7 +25,7 @@ axiosJWT.interceptors.request.use(
     // console.log(decodedToken.exp * 1000);
     // console.log(currentDate.getTime());
     if (decodedToken.exp * 1000 < currentDate.getTime()) {
-      // console.log("inside if block");
+      console.log("inside if block");
       const data = await newTokenGenerator();
       config.headers["authorization"] =
         "Bearer " + localStorage.getItem("accessToken");

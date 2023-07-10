@@ -1,43 +1,53 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Navbar from "../components/navbar";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import axios from "axios";
 import jwt_decode from "jwt-decode";
+import {
+  deletePasswordRoute,
+  getSinglePasswordRoute,
+  updatePasswordRoute,
+} from "../utils/APIendpoints";
+import UseFetch from "../hooks/useFetch";
+import { axiosJWT } from "../utils/axiosInstance";
+import { PrivateKeyContext } from "../context/privateKeyContext";
 
-const EditPassword = (props) => {
-  const URL = "http://localhost:3300";
+const EditPassword = () => {
+  const { setPrivateKey, privateKey } = useContext(PrivateKeyContext);
   const [passDetailes, setPassDetailes] = useState({});
   const navigate = useNavigate();
-  const accessToken = sessionStorage.getItem("access");
-  axios.defaults.withCredentials = true;
-  axios.defaults.headers.common["authorization"] = "Bearer " + accessToken;
+  const accessToken = localStorage.getItem("accessToken");
+  axiosJWT.defaults.withCredentials = true;
+  axiosJWT.defaults.headers.common["authorization"] = "Bearer " + accessToken;
   const [searchParams, setSearchParams] = useSearchParams();
   const passId = searchParams.get("id");
-  const { privateKey } = props;
   const reqData = { privateKey };
+  const [errors, setErrors] = useState();
   const [isVisible, setIsVisible] = useState(false);
   const [isVisible2, setIsVisible2] = useState(false);
 
-  const axiosJWT = axios.create();
   useEffect(() => {
     async function fetchData() {
-      await axiosJWT
-        .post(`${URL}/pass/getpass/${passId}`, reqData)
-        .then((response) => {
-          passDetailes.websiteURL = response.data.websiteURL;
-          passDetailes.Title = response.data.siteTitle;
-          passDetailes.password = response.data.password;
-          passDetailes.username = response.data.userName;
-          console.log(passDetailes);
-        })
-        .catch((err) => {
-          console.log(err);
-          if (err.response.data.msg === "jwt expired") {
-            alert("User logged out");
-            sessionStorage.removeItem("access");
-            window.location.reload(false);
-          }
+      try {
+        const { data } = await axiosJWT.post(
+          `${getSinglePasswordRoute}/${passId}`,
+          reqData
+        );
+        setPassDetailes({
+          websiteURL: data.websiteURL,
+          Title: data.siteTitle,
+          password: data.password,
+          username: data.userName,
         });
+      } catch (err) {
+        const { response } = err;
+        if (response.data?.message === "User not authenticated") {
+          localStorage.removeItem("accessToken");
+          window.location.reload(false);
+        }
+        setErrors(err);
+        console.log(err);
+      }
     }
     fetchData();
   }, []);
@@ -52,69 +62,36 @@ const EditPassword = (props) => {
 
   const handleEditPassword = async (e) => {
     e.preventDefault();
-    if (passDetailes.confirm_password === passDetailes.password) {
-      await axiosJWT
-        .put(`${URL}/pass/updatePass/${passId}`, passDetailes)
-        .then((response) => {
-          console.log(response.data);
-          if (response.data.msg === "Password updated") {
-            navigate("/allPasswords");
-          }
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    } else {
-      alert("Passwords not same");
-    }
-  };
-  const handleDelete = async () => {
-    await axiosJWT
-      .delete(`${URL}/pass/delPass/${passId}`)
-      .then((response) => {
-        console.log(response.data);
-        if (response.data.msg === "Password deleted") {
-          alert("Password deleted");
-          navigate("/allPasswords");
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
-
-  const newTokenGenerator = async () => {
-    await axios
-      .post(`${URL}/auth/refresh-token`)
-      .then((response) => {
-        const { accessToken } = response.data;
-        if (!accessToken) {
-          console.log("User unauthorised");
-        } else {
-          console.log(accessToken);
-          sessionStorage.setItem("access", accessToken);
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
-
-  axiosJWT.interceptors.request.use(
-    async (config) => {
-      let currentDate = new Date();
-      const decodedToken = jwt_decode(sessionStorage.getItem("access"));
-      if (decodedToken.exp * 1000 < currentDate.getTime()) {
-        const data = await newTokenGenerator();
-        config.headers["authorization"] =
-          "Bearer " + sessionStorage.getItem("access");
+    try {
+      if (passDetailes.confirm_password === passDetailes.password) {
+        const { data } = await axiosJWT.put(
+          `${updatePasswordRoute}/${passId}`,
+          passDetailes
+        );
+        navigate("/allPasswords");
+      } else {
+        setErrors("Password and confirm password are not same");
+        alert(errors);
       }
-      return config;
-    },
-    (error) => {
-      return Promise.reject(error);
+    } catch (err) {
+      setErrors(err);
+      console.log(err);
     }
-  );
+  };
+
+  const handleDelete = async () => {
+    try {
+      const { data } = await axiosJWT.delete(
+        `${deletePasswordRoute}/${passId}`
+      );
+      console.log(data);
+      alert(data.msg);
+      navigate("/allPasswords");
+    } catch (err) {
+      setErrors(err);
+      console.log(err);
+    }
+  };
 
   return (
     <div className="h-screen bg-white">

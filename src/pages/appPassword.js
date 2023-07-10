@@ -3,18 +3,18 @@ import Navbar from "../components/navbar";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import jwt_decode from "jwt-decode";
+import { axiosJWT } from "../utils/axiosInstance";
+import { addPasswordRoute } from "../utils/APIendpoints";
 
 const AddPassword = () => {
-  const URL = "http://localhost:3300";
   const [passDetailes, setPassDetailes] = useState({});
   const navigate = useNavigate();
-  const accessToken = sessionStorage.getItem("access");
-  axios.defaults.withCredentials = true;
-  axios.defaults.headers.common["authorization"] = "Bearer " + accessToken;
+  const accessToken = localStorage.getItem("accessToken");
+  axiosJWT.defaults.withCredentials = true;
+  axiosJWT.defaults.headers.common["authorization"] = "Bearer " + accessToken;
   const [isVisible, setIsVisible] = useState(false);
   const [isVisible2, setIsVisible2] = useState(false);
-
-  const axiosJWT = axios.create();
+  const [errors, setErrors] = useState();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -26,55 +26,19 @@ const AddPassword = () => {
 
   const handleAddPassword = async (e) => {
     e.preventDefault();
-    if (passDetailes.confirm_password === passDetailes.password) {
-      await axiosJWT
-        .post(`${URL}/pass/addPass`, passDetailes)
-        .then((response) => {
-          console.log(response.data);
-          if (response.data.msg === "password stored") {
-            navigate("/allPasswords");
-          }
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    } else {
-      alert("Passwords not same");
-    }
-  };
-
-  const newTokenGenerator = async () => {
-    await axios
-      .post(`${URL}/auth/refresh-token`)
-      .then((response) => {
-        const { accessToken } = response.data;
-        if (!accessToken) {
-          console.log("User unauthorised");
-        } else {
-          console.log(accessToken);
-          sessionStorage.setItem("access", accessToken);
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
-
-  axiosJWT.interceptors.request.use(
-    async (config) => {
-      let currentDate = new Date();
-      const decodedToken = jwt_decode(sessionStorage.getItem("access"));
-      if (decodedToken.exp * 1000 < currentDate.getTime()) {
-        const data = await newTokenGenerator();
-        config.headers["authorization"] =
-          "Bearer " + sessionStorage.getItem("access");
+    try {
+      if (passDetailes.confirm_password === passDetailes.password) {
+        const { data } = await axiosJWT.post(addPasswordRoute, passDetailes);
+        console.log(data);
+        navigate("/allPasswords");
+      } else {
+        setErrors("Password and confirm password are not same");
+        alert("Password and confirm password are not same");
       }
-      return config;
-    },
-    (error) => {
-      return Promise.reject(error);
+    } catch (err) {
+      console.log(err);
     }
-  );
+  };
 
   return (
     <div className="h-screen bg-white">
