@@ -15,7 +15,9 @@ body {
   height: 40vmin;
   pointer-events: none;
 }
-
+/* * {
+  box-sizing: border-box;
+} */
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
     animation: App-logo-spin infinite 20s linear;
@@ -131,6 +133,9 @@ body {
   line-height: 1.5;
   max-width: 30ch;
 }
+.websiteURL {
+  margin: 10px 0;
+}
 
 .center {
   display: flex;
@@ -138,6 +143,17 @@ body {
   align-items: center;
   position: relative;
   padding: 4rem 0;
+}
+
+.loading {
+  font-size: 30px;
+  text-align: center;
+  position: relative;
+  top: 200px;
+}
+.showIcon {
+  display: flex;
+  justify-content: end;
 }
 
 .center::before {

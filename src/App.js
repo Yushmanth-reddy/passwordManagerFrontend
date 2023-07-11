@@ -12,10 +12,11 @@ import PrivateKey from "./pages/privateKey";
 import Signin from "./pages/signin";
 import SignUp from "./pages/signup";
 import AllPasswords from "./pages/allPassword";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import ProtectedRoute from "./utils/ProtectedRoutes";
 import EditPassword from "./pages/editPassword";
 import LandingPage from "./pages/landingPage";
+import { PrivateKeyContext } from "./context/privateKeyContext";
 
 function App() {
   const [loading, setLoading] = useState(true);
@@ -27,30 +28,13 @@ function App() {
     }, 3000);
   }
 
-  const [accessToken, setAccessToken] = useState(null);
-  const [privateKey, setPrivateKey] = useState(null);
-  useEffect(() => {
-    setAccessToken(sessionStorage.getItem("access"));
-  }, []);
   return (
     <BrowserRouter>
       <main>
         <Routes>
           <Route exact path="/" element={<LandingPage />} />
-          <Route
-            path="/signin"
-            element={<Signin setAccessToken={setAccessToken} />}
-          />
-          <Route
-            path="/signup"
-            element={
-              <SignUp
-                setAccessToken={setAccessToken}
-                setPrivateKey={setPrivateKey}
-                privateKey={privateKey}
-              />
-            }
-          />
+          <Route path="/signin" element={<Signin />} />
+          <Route path="/signup" element={<SignUp />} />
           <Route
             path="/home"
             element={
@@ -63,10 +47,7 @@ function App() {
             path="/privateKey"
             element={
               <ProtectedRoute>
-                <PrivateKey
-                  setPrivateKey={setPrivateKey}
-                  privateKey={privateKey}
-                />
+                <PrivateKey />
               </ProtectedRoute>
             }
           />
@@ -83,7 +64,7 @@ function App() {
             path="/editPassword"
             element={
               <ProtectedRoute>
-                <EditPassword privateKey={privateKey} />
+                <EditPassword />
               </ProtectedRoute>
             }
           />
@@ -92,7 +73,7 @@ function App() {
             path="/allPasswords"
             element={
               <ProtectedRoute>
-                <AllPasswords privateKey={privateKey} />
+                <AllPasswords />
               </ProtectedRoute>
             }
           />

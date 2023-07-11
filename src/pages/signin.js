@@ -1,15 +1,15 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
+import { signInRoute } from "../utils/APIendpoints";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { toastOption } from "../utils/axiosInstance";
 
-export default function Signin(props) {
-  const URL = "http://localhost:3300";
+export default function Signin() {
   const [user, setUser] = useState({ email: "", password: "" });
-  const [tokens, setTokens] = useState({});
-  const [isTokenPresent, setIsTokenPresent] = useState(false);
   const navigate = useNavigate();
   axios.defaults.withCredentials = true;
-  const { setAccessToken } = props;
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -21,23 +21,19 @@ export default function Signin(props) {
 
   const handleSignin = async (e) => {
     e.preventDefault();
-    await axios
-      .post(`${URL}/auth/signin`, user)
-      .then((response) => {
-        if (response.data.accessToken) {
-          setTokens(response.data);
-          setIsTokenPresent(true);
-          sessionStorage.setItem("access", response.data.accessToken);
-          setAccessToken(response.data.accessToken);
-          navigate("/privateKey");
-        } else {
-          console.log(response.data);
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-        setIsTokenPresent(false);
-      });
+    try {
+      const { data } = await axios.post(signInRoute, user);
+      if (data.accessToken) {
+        console.log(data);
+        localStorage.setItem("accessToken", data.accessToken);
+        navigate("/privateKey");
+      }
+    } catch (err) {
+      toast.error(
+        err.response?.data?.message[0]?.msg || err.response?.data?.message,
+        toastOption
+      );
+    }
   };
 
   return (
@@ -149,6 +145,7 @@ export default function Signin(props) {
           </p>
         </div>
       </div>
+      <ToastContainer />
     </>
   );
 }

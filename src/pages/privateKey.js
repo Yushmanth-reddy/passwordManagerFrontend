@@ -1,61 +1,32 @@
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import jwt_decode from "jwt-decode";
+import { PrivateKeyContext } from "../context/privateKeyContext";
+import { RefreshTokenRoute } from "../utils/APIendpoints";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { toastOption } from "../utils/axiosInstance";
 
-export default function PrivateKey(props) {
-  const URL = "http://localhost:3300";
-  const { setPrivateKey, privateKey } = props;
-  const accessToken = sessionStorage.getItem("access");
+export default function PrivateKey() {
+  const { setPrivateKey, privateKey } = useContext(PrivateKeyContext);
+  const accessToken = localStorage.getItem("accessToken");
   axios.defaults.withCredentials = true;
   axios.defaults.headers.common["authorization"] = "Bearer " + accessToken;
   const navigate = useNavigate();
-
-  const axiosJWT = axios.create();
 
   const checkPrivate = async () => {
     setPrivateKey(privateKey.replace(/\\n/g, "\n"));
     if (privateKey !== "") {
       navigate("/home");
+    } else {
+      toast.error("Enter a valid private key", toastOption);
     }
   };
 
   const handleChange = (e) => {
     setPrivateKey(e.target.value);
   };
-
-  const newTokenGenerator = async () => {
-    await axios
-      .post(`${URL}/auth/refresh-token`)
-      .then((response) => {
-        const { accessToken } = response.data;
-        if (!accessToken) {
-          console.log("User unauthorised");
-        } else {
-          console.log(accessToken);
-          sessionStorage.setItem("access", accessToken);
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
-
-  axiosJWT.interceptors.request.use(
-    async (config) => {
-      let currentDate = new Date();
-      const decodedToken = jwt_decode(sessionStorage.getItem("access"));
-      if (decodedToken.exp * 1000 < currentDate.getTime()) {
-        const data = await newTokenGenerator();
-        config.headers["authorization"] =
-          "Bearer " + sessionStorage.getItem("access");
-      }
-      return config;
-    },
-    (error) => {
-      return Promise.reject(error);
-    }
-  );
 
   return (
     <div className="relative flex flex-col justify-center min-h-screen overflow-hidden">
@@ -96,6 +67,7 @@ export default function PrivateKey(props) {
           </Link>
         </p>
       </div>
+      <ToastContainer />
     </div>
   );
 }
