@@ -2,15 +2,14 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { signInRoute } from "../utils/APIendpoints";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { toastOption } from "../utils/axiosInstance";
 
-export default function Signin(props) {
+export default function Signin() {
   const [user, setUser] = useState({ email: "", password: "" });
-  const [tokens, setTokens] = useState({});
-  const [isTokenPresent, setIsTokenPresent] = useState(false);
-  const [errors, setErrors] = useState();
   const navigate = useNavigate();
   axios.defaults.withCredentials = true;
-  const { setAccessToken } = props;
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -30,26 +29,11 @@ export default function Signin(props) {
         navigate("/privateKey");
       }
     } catch (err) {
-      setErrors(err);
-      console.log(err);
+      toast.error(
+        err.response?.data?.message[0]?.msg || err.response?.data?.message,
+        toastOption
+      );
     }
-    // await axios
-    //   .post(`${URL}/auth/signin`, user)
-    //   .then((response) => {
-    //     if (response.data.accessToken) {
-    //       setTokens(response.data);
-    //       setIsTokenPresent(true);
-    //       sessionStorage.setItem("access", response.data.accessToken);
-    //       setAccessToken(response.data.accessToken);
-    //       navigate("/privateKey");
-    //     } else {
-    //       console.log(response.data);
-    //     }
-    //   })
-    //   .catch((err) => {
-    //     console.log(err);
-    //     setIsTokenPresent(false);
-    //   });
   };
 
   return (
@@ -137,9 +121,7 @@ export default function Signin(props) {
                 className="block w-full px-4 py-2 mt-2 text-blue-500 bg-white border rounded-md focus:border-blue-400 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
               />
             </div>
-            {errors && (
-              <span align="center">{errors.response.data.message}</span>
-            )}
+
             <div className="mt-6">
               <button
                 type="submit"
@@ -163,6 +145,7 @@ export default function Signin(props) {
           </p>
         </div>
       </div>
+      <ToastContainer />
     </>
   );
 }

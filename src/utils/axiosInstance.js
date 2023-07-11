@@ -20,12 +20,12 @@ const newTokenGenerator = async () => {
 axiosJWT.interceptors.request.use(
   async (config) => {
     let currentDate = new Date();
-    console.log(localStorage.getItem("accessToken"));
+    // console.log(localStorage.getItem("accessToken"));
     const decodedToken = await jwt_decode(localStorage.getItem("accessToken"));
     // console.log(decodedToken.exp * 1000);
     // console.log(currentDate.getTime());
     if (decodedToken.exp * 1000 < currentDate.getTime()) {
-      console.log("inside if block");
+      // console.log("inside if block");
       const data = await newTokenGenerator();
       config.headers["authorization"] =
         "Bearer " + localStorage.getItem("accessToken");
@@ -36,3 +36,10 @@ axiosJWT.interceptors.request.use(
     return Promise.reject(error);
   }
 );
+
+export const toastOption = {
+  position: "bottom-right",
+  autoClose: 5000,
+  pauseOnHover: true,
+  draggable: true,
+};

@@ -14,12 +14,12 @@ export default function CardComponent(props) {
     websiteURL,
     _id: id,
   } = props.passwordDetailes;
+  const { setErrors, iferror } = props;
   const { privateKey } = useContext(PrivateKeyContext);
   const accessToken = localStorage.getItem("accessToken");
   const [Password, setPassword] = useState("***********");
   const reqData = { privateKey };
   const Navigate = useNavigate();
-  const [errors, setErrors] = useState();
   const [hide, setHide] = useState(true);
   axiosJWT.defaults.withCredentials = true;
   axiosJWT.defaults.headers.common["authorization"] = "Bearer " + accessToken;
@@ -33,8 +33,7 @@ export default function CardComponent(props) {
       setPassword(data.password);
       setHide(!hide);
     } catch (err) {
-      setErrors(err);
-      console.log(err);
+      iferror(err.response.data.message);
     }
   };
 
@@ -46,7 +45,7 @@ export default function CardComponent(props) {
     <>
       <div className="rounded-lg shadow-md lg:max-w-sm" id={id}>
         <div className="p-8 w-full">
-          <div className="flex ">
+          <div className="flex mb-4">
             <svg
               class="fill-current text-gray-500 w-3 h-3 mr-2 mt-2"
               xmlns="http://www.w3.org/2000/svg"
@@ -58,9 +57,13 @@ export default function CardComponent(props) {
               {siteTitle}
             </h4>
           </div>
-          <p class="mt-8 mb-4 text-gray-700 text-base">
+          <a
+            class="mt-8 mb-5 text-gray-700 text-base websiteURL"
+            href={`https://${websiteURL}`}
+            target="_blank"
+          >
             Site URL: {websiteURL}
-          </p>
+          </a>
           <p class=" text-gray-700 text-base">Username : {userName}</p>
           <p class="mb-4 text-gray-700 text-base">
             Password : {hide ? " **********" : Password}

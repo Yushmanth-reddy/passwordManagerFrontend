@@ -28,30 +28,13 @@ function App() {
     }, 3000);
   }
 
-  const [accessToken, setAccessToken] = useState(null);
-  const { privateKey, setPrivateKey } = useContext(PrivateKeyContext);
-  useEffect(() => {
-    setAccessToken(sessionStorage.getItem("access"));
-  }, []);
   return (
     <BrowserRouter>
       <main>
         <Routes>
           <Route exact path="/" element={<LandingPage />} />
-          <Route
-            path="/signin"
-            element={<Signin setAccessToken={setAccessToken} />}
-          />
-          <Route
-            path="/signup"
-            element={
-              <SignUp
-                setAccessToken={setAccessToken}
-                setPrivateKey={setPrivateKey}
-                privateKey={privateKey}
-              />
-            }
-          />
+          <Route path="/signin" element={<Signin />} />
+          <Route path="/signup" element={<SignUp />} />
           <Route
             path="/home"
             element={
@@ -64,10 +47,7 @@ function App() {
             path="/privateKey"
             element={
               <ProtectedRoute>
-                <PrivateKey
-                  setPrivateKey={setPrivateKey}
-                  privateKey={privateKey}
-                />
+                <PrivateKey />
               </ProtectedRoute>
             }
           />
@@ -84,7 +64,7 @@ function App() {
             path="/editPassword"
             element={
               <ProtectedRoute>
-                <EditPassword privateKey={privateKey} />
+                <EditPassword />
               </ProtectedRoute>
             }
           />
@@ -93,7 +73,7 @@ function App() {
             path="/allPasswords"
             element={
               <ProtectedRoute>
-                <AllPasswords privateKey={privateKey} />
+                <AllPasswords />
               </ProtectedRoute>
             }
           />

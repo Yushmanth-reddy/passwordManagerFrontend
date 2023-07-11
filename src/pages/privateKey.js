@@ -4,58 +4,29 @@ import { useContext, useState } from "react";
 import jwt_decode from "jwt-decode";
 import { PrivateKeyContext } from "../context/privateKeyContext";
 import { RefreshTokenRoute } from "../utils/APIendpoints";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { toastOption } from "../utils/axiosInstance";
 
-export default function PrivateKey(props) {
+export default function PrivateKey() {
   const { setPrivateKey, privateKey } = useContext(PrivateKeyContext);
   const accessToken = localStorage.getItem("accessToken");
   axios.defaults.withCredentials = true;
   axios.defaults.headers.common["authorization"] = "Bearer " + accessToken;
   const navigate = useNavigate();
 
-  const axiosJWT = axios.create();
-
   const checkPrivate = async () => {
     setPrivateKey(privateKey.replace(/\\n/g, "\n"));
     if (privateKey !== "") {
       navigate("/home");
+    } else {
+      toast.error("Enter a valid private key", toastOption);
     }
   };
 
   const handleChange = (e) => {
     setPrivateKey(e.target.value);
-    // console.log(privateKey);
   };
-
-  const newTokenGenerator = async () => {
-    try {
-      const response = await axios.post(RefreshTokenRoute);
-      const accessToken = response.data;
-      if (accessToken) {
-        localStorage.setItem("accessToken", accessToken);
-      } else {
-        console.log("User unauthorised");
-      }
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
-  axiosJWT.interceptors.request.use(
-    async (config) => {
-      let currentDate = new Date();
-      const decodedToken = jwt_decode(localStorage.getItem("accessToken"));
-      console.log("hello");
-      if (decodedToken.exp * 1000 < currentDate.getTime()) {
-        const data = await newTokenGenerator();
-        config.headers["authorization"] =
-          "Bearer " + localStorage.getItem("accessToken");
-      }
-      return config;
-    },
-    (error) => {
-      return Promise.reject(error);
-    }
-  );
 
   return (
     <div className="relative flex flex-col justify-center min-h-screen overflow-hidden">
@@ -96,6 +67,7 @@ export default function PrivateKey(props) {
           </Link>
         </p>
       </div>
+      <ToastContainer />
     </div>
   );
 }

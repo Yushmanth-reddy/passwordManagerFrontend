@@ -4,8 +4,11 @@ import { useContext, useState } from "react";
 import Modal from "../components/Popup";
 import { signUpRoute } from "../utils/APIendpoints";
 import { PrivateKeyContext } from "../context/privateKeyContext";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { toastOption } from "../utils/axiosInstance";
 
-const SignUp = (props) => {
+const SignUp = () => {
   const [user, setUser] = useState({
     email: "",
     name: "",
@@ -13,9 +16,8 @@ const SignUp = (props) => {
     confirmPassword: "",
   });
   const navigate = useNavigate();
-  const { setPrivateKey, privateKey } = useContext(PrivateKeyContext);
+  const { setPrivateKey } = useContext(PrivateKeyContext);
   const [showModal, setShowModal] = useState(false);
-  const [errors, setErrors] = useState();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -38,36 +40,16 @@ const SignUp = (props) => {
           // navigate("/home");
         }
       } else {
-        setErrors("password and confirm password are not same");
+        toast.error("password and confirm password are not same", toastOption);
       }
-      // console.log(user);
     } catch (err) {
-      setErrors(err);
-      // console.log(err);
-      console.log(errors.response?.data?.message[0]?.msg);
+      toast.error(
+        err.response?.data?.message[0]?.msg || err.response?.data?.message,
+        toastOption
+      );
     }
-    // await axios
-    //   .post(`${URL}/auth/signup`, user)
-    //   .then((response) => {
-    //     if (response.data.accessToken) {
-    //       setAccessToken(response.data.accessToken);
-    //       sessionStorage.setItem("access", response.data.accessToken);
-    //       const xyw = response.data.privateKey;
-    //       console.log({ xyw });
-    //       // alert(response.data.privateKey);
-    //       setPrivateKey(xyw);
-    //       // navigate("/home");
-    //     } else {
-    //       console.log(response.data);
-    //     }
-    //   })
-    //   .catch((err) => {
-    //     console.log(err);
-    //   });
   };
-  {
-    // console.log(errors.response?.data?.message[0].msg);
-  }
+
   return (
     <>
       <div className="relative flex flex-col justify-center min-h-screen overflow-hidden ">
@@ -129,15 +111,7 @@ const SignUp = (props) => {
                 className="block w-full px-4 py-2 mt-2 text-blue-500 bg-white border rounded-md focus:border-blue-400 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
               />
             </div>
-            {errors && (
-              <span align="center">
-                {errors.response?.data?.message ||
-                  errors.response?.data?.message.map((e) => (
-                    <div>{e.msg}</div>
-                  )) ||
-                  errors}
-              </span>
-            )}
+
             <div className="mt-6">
               <button
                 type="submit"
@@ -165,6 +139,7 @@ const SignUp = (props) => {
           </p>
         </div>
       </div>
+      <ToastContainer />
     </>
   );
 };
